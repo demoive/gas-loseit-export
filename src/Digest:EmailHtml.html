@@ -59,7 +59,11 @@
 </div>
 
 <div class="chart">
-  <img src="<?= data.chartUrl ?>" alt="Weight chart" width="560" height="200">
+  <img src="<?= data.weightOnlyChartUrl ?>" alt="Weight trend chart" width="560" height="200">
+</div>
+
+<div class="chart">
+  <img src="<?= data.chartUrl ?>" alt="Weight and calories chart" width="560" height="200">
 </div>
 
 <? data.mealGroups.forEach(function(meal) { ?>
