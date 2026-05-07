@@ -1,8 +1,8 @@
 # Lose It! → Google Sheets + Daily Digest
 
-Lose It! is good at tracking food, but its dashboards are mobile-only and its social features are limited.
+[Lose It!](https://www.loseit.com) is good at tracking food, but its functionality is primarily locked into the native mobile app, dashboards/insights is highlight limited on the web, and its social/sharing features are all but nonexistent.
 
-This script closes that gap: it reads your personal export data from a Google Sheet and emails a concise daily digest to yourself (and anyone you want to keep in the loop) turning logging into a lightweight accountability loop.
+This script aims that close that gap: it reads your personal data from Lose It! and emails a concise daily digest to yourself (and anyone you want to keep in the loop). Adding visibility in this way turns the work one does for personal logging into a lightweight accountability loop.
 
 ![Daily digest email](preview-daily-digest.png)
 
@@ -51,6 +51,13 @@ In the Apps Script editor: **Project Settings → Script Properties → Add prop
 
 In the Apps Script editor: **Triggers → Add Trigger → `runDigest` → Time-driven → Day timer.**
 
+Choose the trigger time to match your logging habits, then set `DAILY_REPORT_DAY_OFFSET` accordingly:
+
+| Trigger fires… | `DAILY_REPORT_DAY_OFFSET` |
+|---|---|
+| Evening / night of the same day | `0` |
+| Morning of the following day | `1` |
+
 ### 5. Automated sync *(optional)*
 
 The script can also fetch and import your data automatically using your Lose It! browser session cookie, skipping the manual export step. See the [Disclaimer](#disclaimer) as doing so likely violates their Terms of Service.
@@ -72,6 +79,7 @@ Key options in `src/Config.js`:
 | `WEIGHT_UNIT` | `"lbs"` | Must match **Profile → Settings → Units** in Lose It!. Accepts `"lbs"`, `"kg"`, or `"stones"` (stones are converted and displayed in kg). |
 | `PROTEIN_G_PER_KG` | `1.5` | Recommended daily protein target, in grams per kg of body weight. |
 | `CHART_WINDOW_DAYS` | `14` | Number of days shown in the weight trend chart. |
+| `DAILY_REPORT_DAY_OFFSET` | `0` | How many days back from today the digest covers. Set to `0` when the trigger fires on the same day as the data (e.g. evening), or `1` when the trigger fires the following morning — so that a morning run on Tuesday reports Monday's data. |
 
 ## How it works
 
