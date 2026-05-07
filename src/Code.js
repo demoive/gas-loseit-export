@@ -1,7 +1,7 @@
 // Fetch from Lose It!, sync sheets, and send digest (fully automated).
 function triggerSyncSend() {
   syncData();
-  sendDigest(readAllSheets());
+  sendDigest();
 }
 
 
@@ -11,14 +11,15 @@ function syncData() {
 }
 
 
-// Send digest from sheet data.
-// To target a specific date, replace `d = {}` with `d = { year: 2026, month: 5, day: 24 }`.
-// With no argument, (e.g. from a trigger) defaults to "today".
-function runDigest(d = {}) {
-  const date = (d.year && d.month && d.day)
-    ? new Date(d.year, d.month - 1, d.day)
-    : new Date()
-  ;
+// Manually send digest to the script owner
+function testDigest() {
+  const year  = 2026;
+  const month = 5;
+  const day   = 6;
 
-  sendDigest(readAllSheets(), date);
+  sendDigest(
+    readAllSheets(),
+    new Date(year, month - 1, day),
+    Session.getEffectiveUser().getEmail()
+  );
 }

@@ -1,10 +1,10 @@
-// https://developers.google.com/apps-script/reference/gmail/gmail-app
-
 /**
- * Builds and sends a plain-text daily digest email from the parsed CSV data.
- * @param {Object} parsedData Map of tab name → 2D array of rows.
+ * Builds and sends the daily digest email.
+ * @param {Object} parsedData    Map of tab name → 2D array of rows. Defaults to readAllSheets().
+ * @param {Date}   targetDate    Date to report on. Defaults to today.
+ * @param {string} recipientStr  BCC address. Defaults to CONFIG.DIGEST_RECIPIENTS.
  */
-function sendDigest(parsedData, targetDate = new Date()) {
+function sendDigest(parsedData = readAllSheets(), targetDate = new Date(), recipientStr = CONFIG.DIGEST_RECIPIENTS) {
   const today = Utilities.formatDate(targetDate, Session.getScriptTimeZone(), "MM/dd/yyyy");
   const longDate = Utilities.formatDate(targetDate, Session.getScriptTimeZone(), "d MMMM yyyy");
 
@@ -156,7 +156,7 @@ function sendDigest(parsedData, targetDate = new Date()) {
   MailApp.sendEmail({
     // name: ``,
     noReply: true,
-    bcc: CONFIG.DIGEST_RECIPIENTS,
+    bcc: recipientStr,
     subject: `🏋️ Lose It! summary: ${longDate}`,
     htmlBody: htmlTmpl.evaluate().getContent(),
   });
