@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: monospace; font-size: 14px; color: #222; max-width: 620px; margin: 0 auto; padding: 16px; }
+
+  .chart { margin-top: 12px; margin-bottom: 20px; }
+  .chart img { display: block; max-width: 100%; border-radius: 4px; }
+
+  .section { margin-bottom: 14px; line-height: 1.5; }
+  .section-name { font-weight: bold; }
+
+  .stat-weight  { font-family: monospace; background-color: #d4e8ff; color: #1a62b0; padding: 1px 4px; border-radius: 5px; }
+  .stat-cals    { font-family: monospace; background-color: #ffd699; color: #bb7000; padding: 1px 4px; border-radius: 5px; }
+  .stat-protein { font-family: monospace; background-color: #e8d5ff; color: #6a00b8; padding: 1px 4px; border-radius: 5px; }
+
+  .food-item { line-height: 1.5; }
+  .food-qty  { font-style: italic; color: #606060; }
+</style>
+</head>
+<body>
+
+<!-- <div class="header">
+  <strong><?= data.isComplete ? "✅" : "📝" ?> <?= data.longDate ?></strong>
+</div> -->
+
+<div class="section">
+  <div class="section-name">STATS</div>
+
+  📏 Weight:
+  <? if (data.todayWeightKg !== null) { ?>
+    <span class="stat-weight"><?= data.todayWeightKg.toLocaleString() ?>kg</span>
+    <? if (data.goalWeightKg !== null) { ?>
+      <? var diff = Math.round((data.todayWeightKg - data.goalWeightKg) * 10) / 10; ?>
+      (<strong><?= (diff > 0 ? '+' : '−') + diff ?>kg</strong> of <span class="stat-weight"><?= data.goalWeightKg.toLocaleString() ?>kg</span> goal)
+    <? } ?>
+  <? } else { ?>
+    [no data for today]
+  <? } ?>
+  <br>
+
+  🔥 Calories:
+  <? if (data.foodCals !== null && data.budgetCals !== null) { ?>
+    <span class="stat-cals"><?= data.foodCals.toLocaleString() ?>&nbsp;cal</span>
+    (<strong><?= data.calPct ?>%</strong> of <span class="stat-cals"><?= data.budgetCals.toLocaleString() ?>&nbsp;cal</span> daily budget)
+  <? } else { ?>
+    [no data for today]
+  <? } ?>
+  <br>
+
+  🥩 Protein:
+  <? if (data.foodProtein !== null && data.proteinTargetG !== null) { ?>
+    <span class="stat-protein"><?= data.foodProtein.toLocaleString() ?>g</span>
+    (~<strong><?= data.proteinPct ?>%</strong> of <span class="stat-protein"><?= data.proteinTargetG.toLocaleString() ?>g</span> <em>recommended</em> daily intake)
+  <? } else { ?>
+    [no data for today]
+  <? } ?>
+</div>
+
+<div class="chart">
+  <img src="<?= data.chartUrl ?>" alt="Weight chart" width="560" height="200">
+</div>
+
+<? data.mealGroups.forEach(function(meal) { ?>
+<div class="section">
+  <div class="section-name">
+    <?= meal.name.toUpperCase() ?>
+    <span class="stat-cals"><?= meal.totalCals.toLocaleString() ?>&nbsp;cal</span>
+    <span class="stat-protein"><?= meal.totalProtein ?>g</span>
+  </div>
+  <? if (meal.items.length === 0) { ?>
+  <em>(Skipped)</em><br>
+  <? } else { meal.items.forEach(function(item) { ?>
+  <?= item.emoji ?>
+  <?= item.name ?>
+  <? if (item.qtyStr) { ?> <span class="food-qty">(<?= item.qtyStr ?>)</span><? } ?>
+  <span class="stat-cals"><?= item.cals ?>&nbsp;cal</span>
+  <span class="stat-protein"><?= item.protein.toFixed(1) ?>g</span>
+  <br>
+  <? }); } ?>
+</div>
+<? }); ?>
+
+</body>
+</html>
