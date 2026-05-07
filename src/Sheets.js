@@ -9,7 +9,7 @@ function readAllSheets() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const tz = Session.getScriptTimeZone();
   const result = {};
-  CSV_FILES.forEach(filename => {
+  CONFIG.CSV_FILES.forEach(filename => {
     const tabName = filename.replace(".csv", "");
     const sheet = ss.getSheetByName(tabName);
     if (!sheet) throw new Error(`Sheet tab not found: "${tabName}". Import the CSV data first.`);

@@ -22,7 +22,7 @@ function fetchAndParseCsvs() {
   zipEntries.forEach(blob => { byName[blob.getName()] = blob; });
 
   const result = {};
-  CSV_FILES.forEach(filename => {
+  CONFIG.CSV_FILES.forEach(filename => {
     if (!byName[filename]) {
       throw new Error(`Expected file not found in ZIP: ${filename}`);
     }
