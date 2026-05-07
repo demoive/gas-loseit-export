@@ -16,6 +16,13 @@ const CONFIG = {
   EXPORT_SESSION_COOKIE: `fn_auth=${props["LOSEIT_SESSION_COOKIE"]}`,
   EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS: 2,
 
+  // Number of days shown in the weight/calorie chart (sliding window).
+  CHART_WINDOW_DAYS: 14,
+
+  // HtmlService template file names for email bodies.
+  EMAIL_TEMPLATE_DIGEST: "Digest:EmailHtml",
+  EMAIL_TEMPLATE_COOKIE_EXPIRY: "Email:CookieExpiryTxt",
+
   // Controls which CSV files from the exported ZIP are processed.
   // The name of sheet tab excludes the ".csv" extension.
   CSV_FILES: [

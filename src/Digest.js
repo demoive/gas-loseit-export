@@ -66,8 +66,8 @@ function sendDigest(parsedData, targetDate = new Date()) {
   calRows.forEach(r => { calByDate[r[0]] = Number(r[1]); });
 
   const todayMs = dateToMs_(today);
-  const windowDates = Array.from({ length: 14 }, (_, i) => {
-    const d = new Date(todayMs - (13 - i) * 24 * 60 * 60 * 1000);
+  const windowDates = Array.from({ length: CONFIG.CHART_WINDOW_DAYS }, (_, i) => {
+    const d = new Date(todayMs - (CONFIG.CHART_WINDOW_DAYS - 1 - i) * 24 * 60 * 60 * 1000);
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     return `${mm}/${dd}/${d.getFullYear()}`;
@@ -150,7 +150,7 @@ function sendDigest(parsedData, targetDate = new Date()) {
 
   const emailData = { longDate, isComplete, foodCals, budgetCals, calPct, foodProtein, proteinTargetG, proteinPct, mealGroups, todayWeightKg, goalWeightKg, chartUrl };
 
-  const htmlTmpl = HtmlService.createTemplateFromFile("Email:DigestHtml");
+  const htmlTmpl = HtmlService.createTemplateFromFile(CONFIG.EMAIL_TEMPLATE_DIGEST);
   htmlTmpl.data = emailData;
 
   MailApp.sendEmail({

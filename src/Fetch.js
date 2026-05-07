@@ -59,7 +59,7 @@ function checkCookieExpiry_() {
   const scriptId = ScriptApp.getScriptId();
   const settingsUrl = `https://script.google.com/u/0/home/projects/${scriptId}/settings`;
 
-  const tmpl = HtmlService.createTemplateFromFile("Email:CookieExpiryTxt");
+  const tmpl = HtmlService.createTemplateFromFile(CONFIG.EMAIL_TEMPLATE_COOKIE_EXPIRY);
   tmpl.data = { daysUntilExpiry, formattedExpiry, settingsUrl };
 
   MailApp.sendEmail({
