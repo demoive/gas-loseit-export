@@ -10,11 +10,12 @@ const CONFIG = {
   // "stones" → converted and displayed in kg
   WEIGHT_UNIT: "kg",
 
-  // Rough "recommended" daily protein intake multiplier (g per kg of body weight).
-  // - Sedentary adults => 1.0
-  // - Active / athletes => 1.5
-  // - Active / muscle building => 2.0
-  PROTEIN_G_PER_KG: 1.5,
+  // Multiplier for the _recommended_ daily protein intake (g per kg of body weight).
+  // Rough guidenace (https://www.health.harvard.edu/blog/how-much-protein-do-you-need-every-day-201506188096):
+  // - Sedentary adults: 1.0
+  // - Active / athletes: 1.4-1.8
+  // - Active / muscle building: 2.0+
+  PROTEIN_G_PER_KG: 1.8,
 
   DIGEST_RECIPIENTS: props["DIGEST_RECIPIENTS"],
 
@@ -23,7 +24,7 @@ const CONFIG = {
   EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS: 2,
 
   // Number of days shown in the weight/calorie chart (sliding window).
-  CHART_WINDOW_DAYS: 14,
+  CHART_WINDOW_DAYS: 7,
 
   // HtmlService template file names for email bodies.
   EMAIL_TEMPLATE_DIGEST: "Digest:EmailHtml",
