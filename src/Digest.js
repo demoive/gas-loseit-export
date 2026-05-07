@@ -56,7 +56,7 @@ function buildChartWindow_(today, weightByDate, calByDate) {
   return { windowDates, chartLabels, chartValues, chartCalories };
 }
 
-function buildWeightOnlyChartUrl_(windowDates, chartLabels, chartValues, goalWeightKg) {
+function buildWeightOnlyChartUrl_(windowDates, chartLabels, chartValues, goalWeightKg, weightUnit) {
   const { values: trendValues, slope, intercept } = linearTrend_(chartValues);
 
   // Extend the window forward until the trend line reaches the goal weight (cap at 180 days).
@@ -91,7 +91,7 @@ function buildWeightOnlyChartUrl_(windowDates, chartLabels, chartValues, goalWei
   if (goalWeightKg !== null) annotations.push({
     type: "line", mode: "horizontal", scaleID: "y-axis-0", value: goalWeightKg,
     borderColor: "#27ae60", borderWidth: 1, borderDash: [5, 4],
-    label: { enabled: true, content: `Goal: ${goalWeightKg} kg`, position: "left", fontSize: 8, fontColor: "#27ae60", backgroundColor: "rgba(255,255,255,0.8)" },
+    label: { enabled: true, content: `Goal: ${goalWeightKg} ${weightUnit}`, position: "left", fontSize: 8, fontColor: "#27ae60", backgroundColor: "rgba(255,255,255,0.8)" },
   });
 
   const config = JSON.stringify({
@@ -117,7 +117,7 @@ function buildWeightOnlyChartUrl_(windowDates, chartLabels, chartValues, goalWei
       legend: { display: true },
       ...(annotations.length ? { annotation: { annotations } } : {}),
       scales: {
-        yAxes: [{ id: "y-axis-0", position: "left", scaleLabel: { display: true, labelString: "kg" }, ticks: { precision: 1, min: yMin, max: yMax } }],
+        yAxes: [{ id: "y-axis-0", position: "left", scaleLabel: { display: true, labelString: weightUnit }, ticks: { precision: 1, min: yMin, max: yMax } }],
       },
     },
   });
@@ -181,35 +181,38 @@ function sendDigest(parsedData = readAllSheets(), targetDate = new Date(), recip
 
   // weights: Date, Weight, Last Updated, Deleted
   const weightByDate = {};
+  const weightUnit = CONFIG.WEIGHT_UNIT === "lbs" ? "lbs" : "kg";
+  const toDisplay = CONFIG.WEIGHT_UNIT === "stones" ? 6.35029 : 1;
+  const displayToKg = CONFIG.WEIGHT_UNIT === "lbs" ? 1 / 2.20462 : 1;
   parsedData["weights"].slice(1).filter(r => r[3] !== "true")
-    .forEach(r => { weightByDate[r[0]] = Math.round(Number(r[1]) / 2.20462 * 10) / 10; });
+    .forEach(r => { weightByDate[r[0]] = Math.round(Number(r[1]) * toDisplay * 10) / 10; });
 
   // profile: Name, Value rows — find the "Goal Weight" row
   let goalWeightKg = null;
   const profileRows = parsedData["profile"];
   if (profileRows) {
     const goalRow = profileRows.slice(1).find(r => r[0] && r[0].toLowerCase().includes("goal") && r[0].toLowerCase().includes("weight"));
-    if (goalRow && goalRow[1]) goalWeightKg = Math.round(Number(goalRow[1]) / 2.20462 * 10) / 10;
+    if (goalRow && goalRow[1]) goalWeightKg = Math.round(Number(goalRow[1]) * toDisplay * 10) / 10;
   }
 
   const calByDate = {};
   calRows.forEach(r => { calByDate[r[0]] = Number(r[1]); });
 
-  // protein target based on most recent weight
+  // protein target based on most recent weight (always in kg)
   const todayWeightKg = weightByDate[today] !== undefined ? weightByDate[today] : null;
   const sortedWeightDates = Object.keys(weightByDate).sort((a, b) => dateToMs_(a) - dateToMs_(b));
-  const targetWeightKg = todayWeightKg !== null
+  const targetWeightDisplay = todayWeightKg !== null
     ? todayWeightKg
     : (sortedWeightDates.length ? weightByDate[sortedWeightDates[sortedWeightDates.length - 1]] : null);
-  const proteinTargetG = targetWeightKg !== null ? Math.round(targetWeightKg * CONFIG.PROTEIN_G_PER_KG) : null;
+  const proteinTargetG = targetWeightDisplay !== null ? Math.round(targetWeightDisplay * displayToKg * CONFIG.PROTEIN_G_PER_KG) : null;
   const proteinPct = (foodProtein !== null && proteinTargetG) ? Math.round(foodProtein / proteinTargetG * 100) : null;
 
   // charts
   const { windowDates, chartLabels, chartValues, chartCalories } = buildChartWindow_(today, weightByDate, calByDate);
-  const weightOnlyChartUrl = buildWeightOnlyChartUrl_(windowDates, chartLabels, chartValues, goalWeightKg);
+  const weightOnlyChartUrl = buildWeightOnlyChartUrl_(windowDates, chartLabels, chartValues, goalWeightKg, weightUnit);
   const chartUrl = buildWeightCaloriesChartUrl_(chartLabels, chartCalories, budgetCals);
 
-  const emailData = { longDate, isComplete, foodCals, budgetCals, calPct, foodProtein, proteinTargetG, proteinPct, mealGroups, todayWeightKg, goalWeightKg, weightOnlyChartUrl, chartUrl };
+  const emailData = { longDate, isComplete, foodCals, budgetCals, calPct, foodProtein, proteinTargetG, proteinPct, mealGroups, todayWeightKg, goalWeightKg, weightUnit, weightOnlyChartUrl, chartUrl };
 
   const htmlTmpl = HtmlService.createTemplateFromFile(CONFIG.EMAIL_TEMPLATE_DIGEST);
   htmlTmpl.data = emailData;

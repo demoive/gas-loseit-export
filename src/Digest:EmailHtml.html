@@ -30,10 +30,10 @@
 
   📏 Weight:
   <? if (data.todayWeightKg !== null) { ?>
-    <span class="stat-weight"><?= data.todayWeightKg.toLocaleString() ?>kg</span>
+    <span class="stat-weight"><?= data.todayWeightKg.toLocaleString() ?><?= data.weightUnit ?></span>
     <? if (data.goalWeightKg !== null) { ?>
       <? var diff = Math.round((data.todayWeightKg - data.goalWeightKg) * 10) / 10; ?>
-      (<strong><?= (diff > 0 ? '+' : '−') + diff ?>kg</strong> of <span class="stat-weight"><?= data.goalWeightKg.toLocaleString() ?>kg</span> goal)
+      (<strong><?= (diff > 0 ? '+' : '−') + diff ?><?= data.weightUnit ?></strong> of <span class="stat-weight"><?= data.goalWeightKg.toLocaleString() ?><?= data.weightUnit ?></span> goal)
     <? } ?>
   <? } else { ?>
     [no data for today]

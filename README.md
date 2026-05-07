@@ -63,6 +63,16 @@ The script can also fetch and import your data automatically using your Lose It!
 
 `triggerSyncSend` fetches the latest data, syncs the sheet, and sends the digest in one run. The script will also email you when the cookie is close to expiry.
 
+## Configuration
+
+Key options in `src/Config.js`:
+
+| Setting | Default | Description |
+|---|---|---|
+| `WEIGHT_UNIT` | `"lbs"` | Must match **Profile → Settings → Units** in Lose It!. Accepts `"lbs"`, `"kg"`, or `"stones"` (stones are converted and displayed in kg). |
+| `PROTEIN_G_PER_KG` | `1.5` | Recommended daily protein target, in grams per kg of body weight. |
+| `CHART_WINDOW_DAYS` | `14` | Number of days shown in the weight trend chart. |
+
 ## How it works
 
 **Primary (manual import):**

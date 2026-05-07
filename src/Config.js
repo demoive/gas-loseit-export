@@ -4,6 +4,12 @@ const props = PropertiesService.getScriptProperties().getProperties();
 
 const CONFIG = {
 
+  // Units used by the Lose It! export for weight data.
+  // "lbs"    → displayed as-is in lbs (default)
+  // "kg"     → displayed as-is in kg
+  // "stones" → converted and displayed in kg
+  WEIGHT_UNIT: "kg",
+
   // Rough "recommended" daily protein intake multiplier (g per kg of body weight).
   // - Sedentary adults => 1.0
   // - Active / athletes => 1.5
