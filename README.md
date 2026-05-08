@@ -1,8 +1,8 @@
 # Lose It! → Google Sheets + Daily Digest
 
-[Lose It!](https://www.loseit.com) is good at tracking food, but its functionality is primarily locked into the native mobile app, dashboards/insights is highlight limited on the web, and its social/sharing features are all but nonexistent.
+[Lose It!](https://www.loseit.com) is good at tracking food, but is primarily locked into the native mobile app and dashboards/insights is lacking on the web -- to mention nothing of its social/sharing features which are all but nonexistent.
 
-This script aims that close that gap: it reads your personal data from Lose It! and emails a concise daily digest to yourself (and anyone you want to keep in the loop). Adding visibility in this way turns the work one does for personal logging into a lightweight accountability loop.
+This script aims that close that gap: it reads your personal data from Lose It! and emails a concise daily digest (with useful charts!) to yourself and anyone else that you want to keep in the loop. Adding visibility in this way turns the work one does for personal logging into a lightweight accountability loop.
 
 ![Daily digest email](preview-daily-digest.png)
 
@@ -15,11 +15,11 @@ This script aims that close that gap: it reads your personal data from Lose It! 
 3. Create a new Google Spreadsheet.
 4. For each CSV listed in `src/Config.js`, import it as a new sheet tab named after the file (without `.csv`).
 
-Repeat this step whenever you want to refresh the data (automating step 4 is against the terms and conditions of of Lose It!).
+Repeat this process whenever you want to refresh the data -- or you can automate it (more information below).
 
 ### 2. Create the Apps Script project
 
-Create your Apps Script within your Google Spreadsheet by the menu option: Extensions > Apps Script.
+Create your Apps Script within your Google Spreadsheet by the menu option: **Extensions  → Apps Script**.
 
 In the editor, you can copy paste the code from this repo (everything in `/src`) or push the files with [clasp](https://github.com/google/clasp):
 
@@ -34,29 +34,22 @@ clasp create --title "Lose It! Digest" --parentId "{id}"
 clasp push
 ```
 
-Get the `--parentId` of your Spreadsheet from its URL: `https://docs.google.com/spreadsheets/d/{id}/edit`
+_(Get the `--parentId` of your Spreadsheet from its URL: `https://docs.google.com/spreadsheets/d/{id}/edit`)_
 
 ### 3. Set Script Properties
 
-In your Spreadsheet: **Extensions → Apps Script**.
-
-In the Apps Script editor: **Project Settings → Script Properties → Add property**.
+In the Apps Script editor: **Project Settings → Script Properties → Add property**...
 
 | Property | Value |
 |---|---|
-| `DIGEST_RECIPIENTS` | Comma-separated email addresses to BCC on the daily digest |
+| `DIGEST_RECIPIENTS` | Comma-separated email addresses to BCC on the daily digest (including yourself) |
 | `LOSEIT_SESSION_COOKIE` | _Optional_ for automated data fetching (see [step #5](#5-automated-sync-optional)) |
 
 ### 4. Add a time-based trigger
 
-In the Apps Script editor: **Triggers → Add Trigger → `runDigest` → Time-driven → Day timer.**
+In the Apps Script editor: **Triggers → Add Trigger → `runDigest` → Time-driven → Day timer**...
 
-Choose the trigger time to match your logging habits, then set `DAILY_REPORT_DAY_OFFSET` accordingly:
-
-| Trigger fires… | `DAILY_REPORT_DAY_OFFSET` |
-|---|---|
-| Evening / night of the same day | `0` |
-| Morning of the following day | `1` |
+Choose the trigger time to match your logging habits.
 
 ### 5. Automated sync *(optional)*
 
@@ -66,9 +59,9 @@ The script can also fetch and import your data automatically using your Lose It!
 2. Open DevTools → **Application** → **Cookies** → `https://www.loseit.com`.
 3. Copy the value of the **`fn_auth`** cookie.
 4. Add an additional Script Property: `LOSEIT_SESSION_COOKIE` → the cookie value.
-5. Point your trigger at `triggerSyncSend` instead of `runDigest`.
+5. Point your trigger (from step #4) at `triggerSyncSend` instead of `runDigest`.
 
-`triggerSyncSend` fetches the latest data, syncs the sheet, and sends the digest in one run. The script will also email you when the cookie is close to expiry.
+_`triggerSyncSend` fetches the latest data, syncs the sheet, and sends the digest in one run. The script will also email you when the cookie is close to expiry._
 
 ## Configuration
 
@@ -78,8 +71,7 @@ Key options in `src/Config.js`:
 |---|---|---|
 | `WEIGHT_UNIT` | `"lbs"` | Must match **Profile → Settings → Units** in Lose It!. Accepts `"lbs"`, `"kg"`, or `"stones"` (stones are converted and displayed in kg). |
 | `PROTEIN_G_PER_KG` | `1.5` | Recommended daily protein target, in grams per kg of body weight. |
-| `CHART_WINDOW_DAYS` | `14` | Number of days shown in the weight trend chart. |
-| `DAILY_REPORT_DAY_OFFSET` | `0` | How many days back from today the digest covers. Set to `0` when the trigger fires on the same day as the data (e.g. evening), or `1` when the trigger fires the following morning — so that a morning run on Tuesday reports Monday's data. |
+| `CHART_WINDOW_DAYS` | `14` | Number of days shown in the calorie chart (sliding window). |
 
 ## How it works
 
@@ -112,7 +104,7 @@ Lose It! export endpoint  →  syncData()  →  Google Sheet tabs
 
 The digest is generated from an HtmlService template and includes a chart rendered by [QuickChart](https://quickchart.io).
 
-To resend for a past date, call `runDigest({ year: 2026, month: 5, day: 4 })` from the editor.
+Edit and run `testDigest()` directly in the Apps Script Editor to resend for a past date. Also useful for testing.
 
 ## License
 

@@ -17,18 +17,20 @@ const CONFIG = {
   // - Active / muscle building: 2.0+
   PROTEIN_G_PER_KG: 1.8,
 
-  DIGEST_RECIPIENTS: props["DIGEST_RECIPIENTS"],
+  // Number of days shown in the calorie chart (sliding window).
+  CHART_WINDOW_DAYS: 7,
+
+  //////////////////////////////////////////////////////////////////////////////////////
+
+  // HtmlService template file names for email bodies.
+  EMAIL_TEMPLATE_DIGEST: "Digest:EmailHtml",
+  EMAIL_TEMPLATE_COOKIE_EXPIRY: "Email:CookieExpiryTxt",
 
   EXPORT_URL: "https://loseit.com/export/data",
   EXPORT_SESSION_COOKIE: `fn_auth=${props["LOSEIT_SESSION_COOKIE"]}`,
   EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS: 2,
 
-  // Number of days shown in the weight/calorie chart (sliding window).
-  CHART_WINDOW_DAYS: 7,
-
-  // HtmlService template file names for email bodies.
-  EMAIL_TEMPLATE_DIGEST: "Digest:EmailHtml",
-  EMAIL_TEMPLATE_COOKIE_EXPIRY: "Email:CookieExpiryTxt",
+  DIGEST_RECIPIENTS: props["DIGEST_RECIPIENTS"],
 
   // Controls which CSV files from the exported ZIP are processed.
   // The name of sheet tab excludes the ".csv" extension.

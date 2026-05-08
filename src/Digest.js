@@ -304,7 +304,7 @@ function sendDigest(parsedData = readAllSheets(), targetDate = new Date(), recip
   const chartProtein = windowDates.map(d => proteinByDate[d] !== undefined ? Math.round(proteinByDate[d]) : null);
   const chartUrl = buildWeightCaloriesChartUrl_(chartLabels, chartCalories, budgetCals, chartProtein, proteinTargetG);
 
-  const emailData = { longDate, isComplete, foodCals, budgetCals, calPct, foodProtein, proteinTargetG, proteinPct, mealGroups, todayWeightKg, goalWeightKg, weightOnlyChartUrl, chartUrl };
+  const emailData = { longDate, isComplete, foodCals, budgetCals, calPct, foodProtein, proteinTargetG, proteinPct, mealGroups, todayWeightKg, goalWeightKg, weightUnit, weightOnlyChartUrl, chartUrl };
 
   const htmlTmpl = HtmlService.createTemplateFromFile(CONFIG.EMAIL_TEMPLATE_DIGEST);
   htmlTmpl.data = emailData;
