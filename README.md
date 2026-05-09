@@ -19,12 +19,13 @@ Repeat this process whenever you want to refresh the data — or you can automat
 
 ### 2. Create the Apps Script project
 
-Create your Apps Script within your Google Spreadsheet by the menu option: **Extensions  → Apps Script**.
+Choose your preferred way to import this Apps Script code:
 
-In the editor, you can copy paste the code from this repo (everything in `/src`) or push the files with [clasp](https://github.com/google/clasp):
+- **Manually**: Open the Apps Script editor through the menu in your Google Spreadsheet menu: **Extensions  → Apps Script**. Then copy/paste the code from this repo (everything in `/src`).
+
+ - **Automatically**: Create and sync the files with [clasp](https://github.com/google/clasp):
 
 ```sh
-
 npm install -g @google/clasp
 clasp login
 
@@ -78,19 +79,19 @@ Key options in `src/Config.js`:
 **Primary (manual import):**
 ```
 loseit.com  →  manual export + import  →  Google Sheet tabs
-                                                        │
-                                                   runDigest()
-                                                        │
-                                                   daily email
+                                                  │
+                                             runDigest()
+                                                  │
+                                             daily email
 ```
 
 **Optional (automated):**
 ```
-loseit.com export endpoint  →  syncData()  →  Google Sheet tabs
-        (fn_auth cookie)                           │
-                                              runDigest()
-                                                   │
-                                              daily email
+   loseit.com    →  export endpoint  →  syncData()  →  Google Sheet tabs
+(fn_auth cookie)                                               │
+                                                          runDigest()
+                                                               │
+                                                          daily email
 ```
 
 | File | Role |

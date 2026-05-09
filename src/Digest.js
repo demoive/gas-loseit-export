@@ -107,11 +107,24 @@ function buildWeightOnlyChartUrl_(weightByDate, startDate, today, goalWeightKg, 
   const [tm, tdy] = today.split("/");
   const todayLabel = `${MONTH_ABBR_[Number(tm) - 1]} ${Number(tdy)}`;
 
+  const startWeight = startDate && weightByDate[startDate] !== undefined
+    ? weightByDate[startDate]
+    : (sortedDates.length ? weightByDate[sortedDates[0]] : null);
+  const currentWeight = weightByDate[today] !== undefined
+    ? weightByDate[today]
+    : (sortedDates.length ? weightByDate[sortedDates[sortedDates.length - 1]] : null);
+  let todayAnnotationContent = "Today";
+  if (startWeight !== null && currentWeight !== null) {
+    const diff = Math.round((startWeight - currentWeight) * 10) / 10;
+    const sign = diff < 0 ? "+" : diff > 0 ? "-" : "";
+    todayAnnotationContent = `Today (𝚫 ${sign}${Math.abs(diff)} ${weightUnit})`;
+  }
+
   const annotations = [];
   if (extLabels.includes(todayLabel)) annotations.push({
     type: "line", mode: "vertical", scaleID: "x-axis-0", value: todayLabel,
     borderColor: "rgba(220,50,50,0.7)", borderWidth: 1,
-    label: { enabled: true, content: "Today", position: "top", fontSize: 8, fontColor: "#dc3232", backgroundColor: "rgba(255,255,255,0.8)" },
+    label: { enabled: true, content: todayAnnotationContent, position: "top", fontSize: 8, fontColor: "#dc3232", backgroundColor: "rgba(255,255,255,0.8)" },
   });
   if (goalWeightKg !== null) annotations.push({
     type: "line", mode: "horizontal", scaleID: "y-axis-0", value: goalWeightKg,
