@@ -14,13 +14,14 @@
   .stat-weight  { font-family: monospace; background-color: #d4e8ff; color: #1a62b0; padding: 1px 4px; border-radius: 5px; }
   .stat-cals    { font-family: monospace; background-color: #ffd699; color: #bb7000; padding: 1px 4px; border-radius: 5px; }
   .stat-protein { font-family: monospace; background-color: #e8d5ff; color: #6a00b8; padding: 1px 4px; border-radius: 5px; }
+  .stat-outlined { border: 1px solid currentColor; }
 
   .meal-table { border-collapse: collapse; }
   .meal-table td { padding: 1px 4px; vertical-align: middle; }
   .col-heading { font-weight: bold; padding: 8px 0 2px; border-bottom: 1px solid #aaa; }
   .col-skipped { font-style: italic; color: #606060; }
   .col-qty   { text-align: right; white-space: nowrap; font-style: italic; color: #606060; }
-  .col-name  { padding-right: 0 !important; }
+  .col-name  { padding-right: 5px !important; }
   .col-cals  { text-align: right; white-space: nowrap; }
   .col-prot  { text-align: right; white-space: nowrap; padding-right: 0 !important; }
 </style>
@@ -36,31 +37,31 @@
 
   📏 Weight:
   <? if (data.todayWeightKg !== null) { ?>
-    <span class="stat-weight"><?= data.todayWeightKg.toLocaleString() ?><?= data.weightUnit ?></span>
+    <span class="stat-weight stat-outlined"><?= data.todayWeightKg.toLocaleString() ?><?= data.weightUnit ?></span>
     <? if (data.goalWeightKg !== null) { ?>
       <? var diff = Math.round((data.todayWeightKg - data.goalWeightKg) * 10) / 10; ?>
-      (<strong><?= (diff > 0 ? '+' : '−') + diff ?><?= data.weightUnit ?></strong> of <span class="stat-weight"><?= data.goalWeightKg.toLocaleString() ?><?= data.weightUnit ?></span> goal)
+      (<strong><?= (diff > 0 ? '+' : '−') + diff ?><?= data.weightUnit ?></strong> of <strong><?= data.goalWeightKg.toLocaleString() ?><?= data.weightUnit ?></strong> goal)
     <? } ?>
   <? } else { ?>
-    [no data for today]
+    <span class="col-skipped">[no data for today]</span>
   <? } ?>
   <br>
 
   🔥 Calories:
   <? if (data.foodCals !== null && data.budgetCals !== null) { ?>
-    <span class="stat-cals"><?= data.foodCals.toLocaleString() ?>&nbsp;cal</span>
-    (<strong><?= data.calPct ?>%</strong> of <span class="stat-cals"><?= data.budgetCals.toLocaleString() ?>&nbsp;cal</span> daily budget)
+    <span class="stat-cals stat-outlined"><?= data.foodCals.toLocaleString() ?>&nbsp;cal</span>
+    (<strong><?= data.calPct ?>%</strong> of <strong><?= data.budgetCals.toLocaleString() ?>&nbsp;cal</strong> daily budget)
   <? } else { ?>
-    [no data for today]
+    <span class="col-skipped">[no data for today]</span>
   <? } ?>
   <br>
 
   🥩 Protein:
   <? if (data.foodProtein !== null && data.proteinTargetG !== null) { ?>
-    <span class="stat-protein"><?= data.foodProtein.toLocaleString() ?>g</span>
-    (~<strong><?= data.proteinPct ?>%</strong> of <span class="stat-protein"><?= data.proteinTargetG.toLocaleString() ?>g</span> <em>recommended</em> daily intake)
+    <span class="stat-protein stat-outlined"><?= data.foodProtein.toLocaleString() ?>g</span>
+    (<strong><?= data.proteinPct ?>%</strong> of <strong><?= data.proteinTargetG.toLocaleString() ?>g</strong> <em>recommended</em> daily intake)
   <? } else { ?>
-    [no data for today]
+    <span class="col-skipped">[no data for today]</span>
   <? } ?>
 </div>
 
@@ -72,6 +73,12 @@
   <img src="<?= data.chartUrl ?>" alt="Weight and calories chart" width="560" height="200">
 </div>
 
+<?
+function heatBg(val, max, r2, g2, b2) {
+  var t = Math.min(Math.max(+val, 0) / max, 1);
+  return 'rgb(' + Math.round(255 + (r2-255)*t) + ',' + Math.round(255 + (g2-255)*t) + ',' + Math.round(255 + (b2-255)*t) + ')';
+}
+?>
 <div class="section">
   <table class="meal-table">
   <? data.mealGroups.forEach(function(meal) { ?>
@@ -79,16 +86,16 @@
       <td class="col-heading" colspan="2">
         <?= meal.name.toUpperCase() ?>
       </td>
-      <td class="col-heading col-cals"><span class="stat-cals"><?= meal.totalCals.toLocaleString() ?>&nbsp;cal</span></td>
-      <td class="col-heading col-prot"><span class="stat-protein"><?= Math.round(meal.totalProtein) ?>g</span></td>
+      <td class="col-heading col-cals"><span class="stat-cals stat-outlined" style="background-color:<?!= heatBg(meal.totalCals, data.foodCals, 255, 160, 40) ?>;"><?= meal.totalCals.toLocaleString() ?>&nbsp;cal</span></td>
+      <td class="col-heading col-prot"><span class="stat-protein stat-outlined" style="background-color:<?!= heatBg(meal.totalProtein, data.foodProtein, 176, 64, 255) ?>;"><?= Math.round(meal.totalProtein) ?>g</span></td>
     </tr>
-    
+
     <? meal.items.forEach(function(item) { ?>
     <tr>
       <td class="col-qty"><?= item.qtyStr || '' ?></td>
       <td class="col-name"><?= item.emoji ?>&nbsp;<?= item.name ?></td>
-      <td class="col-cals"><span class="stat-cals"><?= item.cals ?>&nbsp;cal</span></td>
-      <td class="col-prot"><span class="stat-protein"><?= Math.round(item.protein) ?>g</span></td>
+      <td class="col-cals"><span class="stat-cals" style="background-color:<?!= heatBg(item.cals, meal.totalCals, 255, 160, 40) ?>;"><?= item.cals ?>&nbsp;cal</span></td>
+      <td class="col-prot"><span class="stat-protein" style="background-color:<?!= heatBg(item.protein, meal.totalProtein, 176, 64, 255) ?>;"><?= Math.round(item.protein) ?>g</span></td>
     </tr>
     <? }); ?>
 

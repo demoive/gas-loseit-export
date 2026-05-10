@@ -15,7 +15,7 @@ const CONFIG = {
   // - Sedentary adults: 1.0
   // - Active / athletes: 1.4-1.8
   // - Active / muscle building: 2.0+
-  PROTEIN_G_PER_KG: 1.8,
+  PROTEIN_G_PER_KG: 2.0,
 
   // Number of days shown in the calorie chart (sliding window).
   CHART_WINDOW_DAYS: 7,
