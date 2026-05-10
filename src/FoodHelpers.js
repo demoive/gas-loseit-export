@@ -63,7 +63,9 @@ function formatQty_(qty, units) {
   }
 
   const abbrev = ABBREV[u] || units.trim();
-  return `${fmtNum(n)}${abbrev}`;
+  const INTEGER_UNITS = new Set(['ml', 'g', 'mg', 'kg', 'cal', 'kcal', 'IU']);
+  const displayVal = INTEGER_UNITS.has(abbrev) ? Math.round(n) : fmtNum(n);
+  return `${displayVal}${abbrev}`;
 }
 
 function getFoodEmoji_(name) {
