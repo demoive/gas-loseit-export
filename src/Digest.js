@@ -196,7 +196,7 @@ function buildWeightCaloriesChartUrl_(chartLabels, chartCalories, budgetCals, ch
     borderDash: [5, 4],
     label: {
       enabled: true,
-      content: `Minimum`,
+      content: `Target`,
       position: "right",
       fontSize: 8,
       fontColor: "#6a00b8",

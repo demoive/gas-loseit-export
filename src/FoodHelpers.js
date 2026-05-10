@@ -59,7 +59,7 @@ function formatQty_(qty, units) {
       }
       return fmtNum(n);
     }
-    return `x${fmtNum(n)}`;
+    return `${fmtNum(n)}x`;
   }
 
   const abbrev = ABBREV[u] || units.trim();

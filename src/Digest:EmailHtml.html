@@ -15,8 +15,14 @@
   .stat-cals    { font-family: monospace; background-color: #ffd699; color: #bb7000; padding: 1px 4px; border-radius: 5px; }
   .stat-protein { font-family: monospace; background-color: #e8d5ff; color: #6a00b8; padding: 1px 4px; border-radius: 5px; }
 
-  .food-item { line-height: 1.5; }
-  .food-qty  { font-style: italic; color: #606060; }
+  .meal-table { border-collapse: collapse; }
+  .meal-table td { padding: 1px 4px; vertical-align: middle; }
+  .col-heading { font-weight: bold; padding: 8px 0 2px; border-bottom: 1px solid #aaa; }
+  .col-skipped { font-style: italic; color: #606060; }
+  .col-qty   { text-align: right; white-space: nowrap; font-style: italic; color: #606060; }
+  .col-name  { padding-right: 0 !important; }
+  .col-cals  { text-align: right; white-space: nowrap; }
+  .col-prot  { text-align: right; white-space: nowrap; padding-right: 0 !important; }
 </style>
 </head>
 <body>
@@ -66,25 +72,37 @@
   <img src="<?= data.chartUrl ?>" alt="Weight and calories chart" width="560" height="200">
 </div>
 
-<? data.mealGroups.forEach(function(meal) { ?>
 <div class="section">
-  <div class="section-name">
-    <?= meal.name.toUpperCase() ?>
-    <span class="stat-cals"><?= meal.totalCals.toLocaleString() ?>&nbsp;cal</span>
-    <span class="stat-protein"><?= meal.totalProtein ?>g</span>
-  </div>
-  <? if (meal.items.length === 0) { ?>
-  <em>(Skipped)</em><br>
-  <? } else { meal.items.forEach(function(item) { ?>
-  <?= item.emoji ?>
-  <?= item.name ?>
-  <? if (item.qtyStr) { ?> <span class="food-qty">(<?= item.qtyStr ?>)</span><? } ?>
-  <span class="stat-cals"><?= item.cals ?>&nbsp;cal</span>
-  <span class="stat-protein"><?= item.protein.toFixed(1) ?>g</span>
-  <br>
-  <? }); } ?>
+  <table class="meal-table">
+  <? data.mealGroups.forEach(function(meal) { ?>
+    <tr>
+      <td class="col-heading" colspan="2">
+        <?= meal.name.toUpperCase() ?>
+      </td>
+      <td class="col-heading col-cals"><span class="stat-cals"><?= meal.totalCals.toLocaleString() ?>&nbsp;cal</span></td>
+      <td class="col-heading col-prot"><span class="stat-protein"><?= Math.round(meal.totalProtein) ?>g</span></td>
+    </tr>
+    
+    <? meal.items.forEach(function(item) { ?>
+    <tr>
+      <td class="col-qty"><?= item.qtyStr || '' ?></td>
+      <td class="col-name"><?= item.emoji ?>&nbsp;<?= item.name ?></td>
+      <td class="col-cals"><span class="stat-cals"><?= item.cals ?>&nbsp;cal</span></td>
+      <td class="col-prot"><span class="stat-protein"><?= Math.round(item.protein) ?>g</span></td>
+    </tr>
+    <? }); ?>
+
+    <tr>
+      <? if (meal.items.length === 0) { ?>
+      <td colspan="4" class="col-skipped">(Skipped)</td>
+      <? } else { ?>
+      <td colspan="4"></td>
+      <? } ?>
+    </tr>
+    <tr><td colspan="4">&nbsp;</td></tr>
+  <? }); ?>
+  </table>
 </div>
-<? }); ?>
 
 <div style="margin-top: 28px; font-size: 11px; color: #aaa; text-align: left;">
   <a href="https://github.com/demoive/gas-loseit-export" style="color: #aaa;">
