@@ -15,7 +15,7 @@ function syncData() {
 function testDigest() {
   const year  = 2026;
   const month = 5;
-  const day   = 10;
+  const day   = 11;
 
   sendDigest(
     readAllSheets(),

@@ -73,6 +73,7 @@ function getFoodEmoji_(name) {
     .replace(/berries\b/g, 'berry')   // blueberries→blueberry, strawberries→strawberry, etc.
     .replace(/erries\b/g, 'erry');    // cherries→cherry (doesn't affect "fries")
   const map = [
+
     // Specific phrases first
     ["egg white",      "🥚"], ["hard boil",     "🥚"],
     ["sweet potato",   "🍠"], ["ice cream",     "🍨"],
@@ -82,17 +83,20 @@ function getFoodEmoji_(name) {
     ["green tea",      "🍵"], ["black tea",     "🍵"],
     ["fried rice",     "🍳"], ["brown rice",    "🍚"],
     ["white rice",     "🍚"],
+
     // Proteins
-    ["egg",      "🥚"], ["chicken", "🍗"], ["turkey",  "🦃"],
-    ["beef",     "🥩"], ["steak",   "🥩"], ["pork",    "🥩"],
+    ["egg",      "🥚"], ["chicken", "🍗"],  ["turkey",  "🦃"],
+    ["beef",     "🥩"], ["steak",   "🥩"],  ["pork",    "🥩"],
     ["bacon",    "🥓"], ["butifarra","🌭"], ["chistorra","🌭"], ["fuet",    "🌭"],
-    ["salmon",  "🐟"], ["tuna",    "🐟"],
-    ["fish",     "🐟"], ["shrimp",  "🦐"], ["lobster", "🦞"],
-    ["crab",     "🦀"], ["tofu",    "🫘"], ["tempeh",  "🫘"],
+    ["salmon",   "🐟"], ["tuna",    "🐟"],  ["sardine", "🐟"],  ["sardina", "🐟"],
+    ["fish",     "🐟"], ["shrimp",  "🦐"],  ["lobster", "🦞"],
+    ["crab",     "🦀"], ["tofu",    "🫘"],  ["tempeh",  "🫘"],
+
     // Dairy
-    ["yogurt",  "🥛"], ["yoghurt", "🥛"], ["cheese",  "🧀"], ["queso",   "🧀"], ["brie",    "🧀"],
+    ["yogurt",  "🥣"], ["yoghurt", "🥣"], ["cheese",  "🧀"], ["queso",   "🧀"], ["brie",    "🧀"],
     ["butter",  "🧈"], ["milk",    "🥛"], ["cream",   "🥛"],
-    ["whey",    "🥛"],
+    ["whey",    "💪"], ["casein",  "💪"],
+
     // Fruits
     ["avocado",      "🥑"], ["strawberry",  "🍓"], ["blueberry",   "🫐"],
     ["raspberry",    "🍓"], ["watermelon",  "🍉"], ["pineapple",   "🍍"],
@@ -103,6 +107,7 @@ function getFoodEmoji_(name) {
     ["kiwi",         "🥝"], ["pomegranate", "🍎"], ["melon",       "🍈"],
     ["medjool",      "🌴"], ["date",        "🌴"],
     ["fig",          "🍑"], ["plum",        "🍑"],
+
     // Vegetables
     ["broccoli",   "🥦"], ["spinach",   "🥬"], ["kale",       "🥬"],
     ["lettuce",    "🥬"], ["arugula",   "🥬"], ["celery",     "🥬"],
@@ -115,19 +120,22 @@ function getFoodEmoji_(name) {
     ["edamame",    "🫛"], ["asparagus", "🌿"], ["artichoke",  "🌿"],
     ["cauliflower","🥦"],
     ["olive",     "🫒"], ["oliva",     "🫒"], ["kalamata",  "🫒"],
+
     // Grains & baked
-    ["granola",   "🥣"], ["oat",       "🥣"], ["cereal",    "🥣"],
+    ["granola",   "🌾"], ["oat",       "🌾"], ["cereal",    "🌾"],
     ["pancake",   "🥞"], ["waffle",    "🧇"], ["bagel",     "🥯"],
     ["croissant", "🥐"], ["bread",     "🍞"], ["toast",     "🍞"],
     ["tortilla",  "🫓"], ["pita",      "🫓"], ["naan",      "🫓"],
     ["cracker",   "🍘"], ["pretzel",   "🥨"], ["rice",      "🍚"],
     ["pasta",     "🍝"], ["noodle",    "🍜"], ["ramen",     "🍜"],
     ["spaghetti", "🍝"], ["quinoa",    "🌾"], ["couscous",  "🌾"],
+
     // Beverages
-    ["espresso", "☕"], ["coffee",  "☕"], ["tea",      "🍵"],
+    ["espresso", "☕"],  ["coffee",  "☕"],  ["tea",      "🍵"],
     ["smoothie", "🥤"], ["juice",   "🧃"], ["wine",     "🍷"],
     ["beer",     "🍺"], ["water",   "💧"], ["soda",     "🥤"],
     ["lemonade", "🍋"],
+
     // Dishes
     ["pizza",    "🍕"], ["burger",   "🍔"], ["sandwich", "🥪"],
     ["wrap",     "🌯"], ["taco",     "🌮"], ["burrito",  "🌯"],
@@ -135,23 +143,27 @@ function getFoodEmoji_(name) {
     ["chili",    "🍲"], ["salad",    "🥗"], ["curry",    "🍛"],
     ["fries",    "🍟"], ["dumpling", "🥟"], ["meatball", "🥩"],
     ["lasagna",  "🍝"],
+
     // Nuts & seeds
     ["almond",    "🌰"], ["walnut",    "🌰"], ["pecan",     "🌰"],
     ["cashew",    "🌰"], ["pistachio", "🌰"], ["peanut",    "🥜"],
     ["nut",       "🌰"], ["seed",      "🌱"], ["chia",      "🌱"],
     ["flax",      "🌱"], ["tahini",    "🌰"], ["hummus",    "🫘"],
+
     // Sweets
     ["chocolate", "🍫"], ["cocoa",     "🍫"], ["brownie",   "🍫"],
     ["cake",      "🎂"], ["cookie",    "🍪"], ["donut",     "🍩"],
     ["doughnut",  "🍩"], ["candy",     "🍬"], ["honey",     "🍯"],
     ["jam",       "🍓"], ["syrup",     "🍯"], ["muffin",    "🧁"],
     ["cupcake",   "🧁"], ["pie",       "🥧"], ["pudding",   "🍮"],
+
     // Condiments & misc
     ["guacamole",  "🥑"], ["ketchup",   "🍅"], ["salsa",     "🍅"],
     ["mayo",       "🫙"], ["mustard",   "🌭"], ["oil",       "🫙"],
     ["salt",       "🧂"], ["dressing",  "🥗"], ["sauce",     "🫙"],
     ["protein",    "💪"], ["bar",       "🍫"], ["shake",     "🥤"],
     ["supplement", "💊"], ["vitamin",   "💊"], ["collagen",  "💊"],
+
   ];
   for (const [kw, emoji] of map) {
     if (n.includes(kw)) return emoji;
