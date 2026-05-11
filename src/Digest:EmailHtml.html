@@ -21,7 +21,8 @@
   .col-heading { font-weight: bold; padding: 8px 0 2px; border-bottom: 1px solid #aaa; }
   .col-skipped { font-style: italic; color: #606060; }
   .col-qty   { text-align: right; white-space: nowrap; font-style: italic; color: #606060; }
-  .col-name  { padding-right: 5px !important; }
+  .col-emoji  { padding-right: 5px !important; border-bottom: 1px dashed #aaa; }
+  .col-name  { padding-right: 5px !important; border-bottom: 1px dashed #aaa; }
   .col-cals  { text-align: right; white-space: nowrap; }
   .col-prot  { text-align: right; white-space: nowrap; padding-right: 0 !important; }
 </style>
@@ -83,7 +84,7 @@ function heatBg(val, max, r2, g2, b2) {
   <table class="meal-table">
   <? data.mealGroups.forEach(function(meal) { ?>
     <tr>
-      <td class="col-heading" colspan="2">
+      <td class="col-heading" colspan="3">
         <?= meal.name.toUpperCase() ?>
       </td>
       <td class="col-heading col-cals"><span class="stat-cals stat-outlined" style="background-color:<?!= heatBg(meal.totalCals, data.foodCals, 255, 160, 40) ?>;"><?= meal.totalCals.toLocaleString() ?>&nbsp;cal</span></td>
@@ -93,7 +94,8 @@ function heatBg(val, max, r2, g2, b2) {
     <? meal.items.forEach(function(item) { ?>
     <tr>
       <td class="col-qty"><?= item.qtyStr || '' ?></td>
-      <td class="col-name"><?= item.emoji ?>&nbsp;<?= item.name ?></td>
+      <td class="col-emoji"><?= item.emoji ?></td>
+      <td class="col-name"><?= item.name ?></td>
       <td class="col-cals"><span class="stat-cals" style="background-color:<?!= heatBg(item.cals, meal.totalCals, 255, 160, 40) ?>;"><?= item.cals ?>&nbsp;cal</span></td>
       <td class="col-prot"><span class="stat-protein" style="background-color:<?!= heatBg(item.protein, meal.totalProtein, 176, 64, 255) ?>;"><?= Math.round(item.protein) ?>g</span></td>
     </tr>
@@ -101,12 +103,12 @@ function heatBg(val, max, r2, g2, b2) {
 
     <tr>
       <? if (meal.items.length === 0) { ?>
-      <td colspan="4" class="col-skipped">(Skipped)</td>
+      <td colspan="5" class="col-skipped">(Skipped)</td>
       <? } else { ?>
-      <td colspan="4"></td>
+      <td colspan="5"></td>
       <? } ?>
     </tr>
-    <tr><td colspan="4">&nbsp;</td></tr>
+    <tr><td colspan="5">&nbsp;</td></tr>
   <? }); ?>
   </table>
 </div>
