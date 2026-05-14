@@ -40,7 +40,7 @@ function fetchAndParseCsvs() {
  * if the cookie expires within EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS: 14,
  days.
  */
-function checkCookieExpiry_() {
+function checkCookieExpiry_(now = new Date()) {
   const parts = CONFIG.EXPORT_SESSION_COOKIE.split(".");
   if (parts.length !== 3) return; // not a JWT, skip
 
@@ -51,7 +51,7 @@ function checkCookieExpiry_() {
   if (!payload.exp) return;
 
   const expiryDate = new Date(payload.exp * 1000);
-  const daysUntilExpiry = Math.floor((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+  const daysUntilExpiry = Math.floor((expiryDate - now) / (1000 * 60 * 60 * 24));
 
   if (daysUntilExpiry > CONFIG.EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS) return;
 
@@ -60,7 +60,11 @@ function checkCookieExpiry_() {
   const settingsUrl = `https://script.google.com/u/0/home/projects/${scriptId}/settings`;
 
   const tmpl = HtmlService.createTemplateFromFile(CONFIG.EMAIL_TEMPLATE_COOKIE_EXPIRY);
-  tmpl.data = { daysUntilExpiry, formattedExpiry, settingsUrl };
+  tmpl.data = {
+    daysUntilExpiry,
+    formattedExpiry,
+    settingsUrl,
+  };
 
   MailApp.sendEmail({
     noReply: true,

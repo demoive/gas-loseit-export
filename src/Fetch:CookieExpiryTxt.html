@@ -1,13 +1,14 @@
-⚠️ The Lose It! `fn_auth` session cookie expires on <?= data.formattedExpiry ?> (<?= data.daysUntilExpiry ?> days away).
+The Lose It! `fn_auth` session cookie expires on <?= data.formattedExpiry ?>.
 
 Update the `LOSEIT_SESSION_COOKIE` script property before it expires, otherwise the sync will fail.
 
 HOW TO CYCLE THE COOKIE
 ────────────────────────
-1. Log in to https://loseit.com in a browser.
-2. Open DevTools (F12 or Cmd+Option+I) → Application → Storage → Cookies → loseit.com.
-3. Find the `fn_auth` cookie and copy its Value.
-4. Open the script settings:
-   <?= data.settingsUrl ?>
-5. Under "Script Properties", update `LOSEIT_SESSION_COOKIE` with the new value.
+1. Log in to https://www.loseit.com in a browser.
+2. Open your browser's DevTools (usually: Cmd+Option+I).
+3. In [Application] → Storage → Cookies → www.loseit.com
+3. Copy the Value of the `fn_auth` cookie.
+4. Open your Apps Script's settings: <?= data.settingsUrl ?>
+
+5. Under "Script Properties" paste the value for the `LOSEIT_SESSION_COOKIE` property.
 6. Save.

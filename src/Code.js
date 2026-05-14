@@ -15,11 +15,15 @@ function syncData() {
 function testDigest() {
   const year  = 2026;
   const month = 5;
-  const day   = 11;
+  const day   = 13;
+
+  const now = new Date(year, month - 1, day);
+
+  checkCookieExpiry_(now);
 
   sendDigest(
     readAllSheets(),
-    new Date(year, month - 1, day),
+    now,
     Session.getEffectiveUser().getEmail()
   );
 }

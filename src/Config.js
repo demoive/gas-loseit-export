@@ -24,11 +24,11 @@ const CONFIG = {
 
   // HtmlService template file names for email bodies.
   EMAIL_TEMPLATE_DIGEST: "Digest:EmailHtml",
-  EMAIL_TEMPLATE_COOKIE_EXPIRY: "Email:CookieExpiryTxt",
+  EMAIL_TEMPLATE_COOKIE_EXPIRY: "Fetch:CookieExpiryTxt",
 
   EXPORT_URL: "https://loseit.com/export/data",
   EXPORT_SESSION_COOKIE: `fn_auth=${props["LOSEIT_SESSION_COOKIE"]}`,
-  EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS: 2,
+  EXPORT_SESSION_COOKIE_EXPIRY_WARNING_DAYS: 3,
 
   DIGEST_RECIPIENTS: props["DIGEST_RECIPIENTS"],
 
