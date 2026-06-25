@@ -1,5 +1,7 @@
 const MONTH_ABBR_ = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+function parseNum_(s) { return Number(String(s).replace(/,/g, '')); }
+
 function dateToMs_(dateStr) {
   const [m, d, y] = dateStr.split("/");
   return new Date(y, m - 1, d).getTime();
@@ -31,14 +33,14 @@ function buildMealGroups_(foodRows) {
   foodRows.forEach(r => {
     const meal = r[3] || "Other";
     if (!grouped[meal]) grouped[meal] = [];
-    grouped[meal].push({ name: r[1], qtyStr: formatQty_(r[4], r[5]), cals: Number(r[6]), protein: Number(r[9]) || 0, emoji: getFoodEmoji_(r[1]) });
+    grouped[meal].push({ name: r[1], qtyStr: formatQty_(r[4], r[5]), cals: parseNum_(r[6]), protein: parseNum_(r[9]) || 0, emoji: getFoodEmoji_(r[1]) });
   });
   const otherMeals = Object.keys(grouped).filter(m => !mealOrder.includes(m)).sort();
   const mealGroups = [...mealOrder, ...otherMeals].map(m => {
     const items = grouped[m] || [];
     return { name: m, items, totalCals: items.reduce((s, i) => s + i.cals, 0), totalProtein: Math.round(items.reduce((s, i) => s + i.protein, 0)) };
   });
-  const foodProtein = foodRows.length ? Math.round(foodRows.reduce((s, r) => s + (Number(r[9]) || 0), 0)) : null;
+  const foodProtein = foodRows.length ? Math.round(foodRows.reduce((s, r) => s + (parseNum_(r[9]) || 0), 0)) : null;
   return { mealGroups, foodProtein };
 }
 
@@ -262,8 +264,8 @@ function sendDigest(parsedData = readAllSheets(), targetDate = new Date(), recip
   // daily-calorie-summary: Date, Food cals, Exercise cals, Budget cals, EER
   const calRows = parsedData["daily-calorie-summary"].slice(1);
   const calRow = calRows.find(r => r[0] === today);
-  const foodCals = calRow ? Number(calRow[1]) : null;
-  const budgetCals = calRow ? Math.round(Number(calRow[3])) : null;
+  const foodCals = calRow ? parseNum_(calRow[1]) : null;
+  const budgetCals = calRow ? Math.round(parseNum_(calRow[3])) : null;
   const calPct = (foodCals !== null && budgetCals) ? Math.round(foodCals / budgetCals * 100) : null;
 
   // daily-values: Date, Name, Value
@@ -279,7 +281,7 @@ function sendDigest(parsedData = readAllSheets(), targetDate = new Date(), recip
   const toDisplay = CONFIG.WEIGHT_UNIT === "stones" ? 6.35029 : 1;
   const displayToKg = CONFIG.WEIGHT_UNIT === "lbs" ? 1 / 2.20462 : 1;
   parsedData["weights"].slice(1).filter(r => r[3] !== "true")
-    .forEach(r => { weightByDate[r[0]] = Math.round(Number(r[1]) * toDisplay * 10) / 10; });
+    .forEach(r => { weightByDate[r[0]] = Math.round(parseNum_(r[1]) * toDisplay * 10) / 10; });
 
   // profile: Name, Value rows — find Goal Weight and Start Date
   let goalWeightKg = null;
@@ -287,19 +289,19 @@ function sendDigest(parsedData = readAllSheets(), targetDate = new Date(), recip
   const profileRows = parsedData["profile"];
   if (profileRows) {
     const goalRow  = profileRows.slice(1).find(r => r[0] && r[0].toLowerCase().includes("goal") && r[0].toLowerCase().includes("weight"));
-    if (goalRow && goalRow[1]) goalWeightKg = Math.round(Number(goalRow[1]) * toDisplay * 10) / 10;
+    if (goalRow && goalRow[1]) goalWeightKg = Math.round(parseNum_(goalRow[1]) * toDisplay * 10) / 10;
     const startRow = profileRows.slice(1).find(r => r[0] && r[0].toLowerCase().includes("start") && r[0].toLowerCase().includes("date"));
     if (startRow && startRow[1]) startDate = Utilities.formatDate(new Date(startRow[1]), Session.getScriptTimeZone(), "MM/dd/yyyy");
   }
 
   const calByDate = {};
-  calRows.forEach(r => { calByDate[r[0]] = Number(r[1]); });
+  calRows.forEach(r => { calByDate[r[0]] = parseNum_(r[1]); });
 
   const proteinByDate = {};
   parsedData["food-logs"].slice(1).filter(r => r[7] !== "1").forEach(r => {
     const d = r[0];
     if (!d) return;
-    proteinByDate[d] = (proteinByDate[d] || 0) + (Number(r[9]) || 0);
+    proteinByDate[d] = (proteinByDate[d] || 0) + (parseNum_(r[9]) || 0);
   });
 
   // protein target based on most recent weight
