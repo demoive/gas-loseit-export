@@ -5,6 +5,8 @@
  * @return {Object} Map of tab name → 2D array of rows (including header).
  */
 function fetchAndParseCsvs() {
+  checkCookieExpiry_();
+
   const response = UrlFetchApp.fetch(CONFIG.EXPORT_URL, {
     method: "get",
     headers: { Cookie: CONFIG.EXPORT_SESSION_COOKIE },
@@ -29,8 +31,6 @@ function fetchAndParseCsvs() {
     const tabName = filename.replace(".csv", "");
     result[tabName] = Utilities.parseCsv(byName[filename].getDataAsString());
   });
-
-  checkCookieExpiry_();
 
   return result;
 }

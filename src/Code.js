@@ -14,8 +14,8 @@ function syncData() {
 // Manually send digest to the script owner
 function testDigest() {
   const year  = 2026;
-  const month = 5;
-  const day   = 13;
+  const month = 6;
+  const day   = 25;
 
   const now = new Date(year, month - 1, day);
 
