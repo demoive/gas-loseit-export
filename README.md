@@ -73,6 +73,7 @@ Key options in `src/Config.js`:
 | `WEIGHT_UNIT` | `"lbs"` | Must match **Profile → Settings → Units** in _Lose It!_. Accepts `"lbs"`, `"kg"`, or `"stones"` (stones are converted and displayed in kg). |
 | `PROTEIN_G_PER_KG` | `1.5` | Recommended daily protein target, in grams per kg of body weight. |
 | `CHART_WINDOW_DAYS` | `14` | Number of days shown in the calorie chart (sliding window). |
+| `WEIGHT_TREND_RECENT_N` | `5` | Number of most-recent weigh-ins used for the short-term trend line on the weight chart. The full-history trend is also shown as a dotted line. Clamped to a minimum of 2 (can't fit a line to a single point) and a maximum of your total weigh-in count. |
 
 ## How it works
 

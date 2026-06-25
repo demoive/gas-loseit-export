@@ -79,30 +79,54 @@ function buildWeightOnlyChartUrl_(weightByDate, startDate, today, goalWeightKg, 
 
   const { values: trendValues, slope, intercept } = linearTrend_(chartValues);
 
+  const nonNullIdxs = chartValues.reduce((acc, v, i) => v !== null ? [...acc, i] : acc, []);
+  const totalWeighIns = nonNullIdxs.length;
+  const effectiveN = Math.max(2, Math.min(CONFIG.WEIGHT_TREND_RECENT_N, totalWeighIns));
+  let recentTrendValues = chartValues.map(() => null);
+  let recentSlope = 0, recentIntercept = null;
+  if (totalWeighIns >= 2) {
+    const recentStartIdx = nonNullIdxs[totalWeighIns - effectiveN];
+    const recentInputs = chartValues.map((v, i) => i >= recentStartIdx ? v : null);
+    const { values: rt, slope: rs, intercept: ri } = linearTrend_(recentInputs);
+    recentSlope = rs;
+    recentIntercept = ri;
+    recentTrendValues = rt.map((v, i) => i >= recentStartIdx ? v : null);
+  }
+
   // Extend forward until the trend line reaches the goal weight (cap at 180 days).
   let extLabels = [...chartLabels];
   let extValues = [...chartValues];
   let extTrend  = [...trendValues];
+  let extRecentTrend = [...recentTrendValues];
 
+  const lastIdx = chartValues.length - 1;
+  let fullDaysToAdd = 0, recentDaysToAdd = 0;
   if (goalWeightKg !== null && slope !== 0 && intercept !== null) {
     const intersectIdx = (goalWeightKg - intercept) / slope;
-    const lastIdx = chartValues.length - 1;
-    if (intersectIdx > lastIdx) {
-      const daysToAdd = Math.min(Math.ceil(intersectIdx) - lastIdx, 180);
-      for (let i = 1; i <= daysToAdd; i++) {
-        const d = new Date(lastMs + i * 24 * 60 * 60 * 1000);
-        extLabels.push(`${MONTH_ABBR_[d.getMonth()]} ${d.getDate()}`);
-        extValues.push(null);
-        extTrend.push(Math.round((slope * (lastIdx + i) + intercept) * 100) / 100);
-      }
-    }
+    if (intersectIdx > lastIdx) fullDaysToAdd = Math.min(Math.ceil(intersectIdx) - lastIdx, 180);
+  }
+  if (goalWeightKg !== null && recentSlope !== 0 && recentIntercept !== null) {
+    const recentIntersectIdx = (goalWeightKg - recentIntercept) / recentSlope;
+    if (recentIntersectIdx > lastIdx) recentDaysToAdd = Math.min(Math.ceil(recentIntersectIdx) - lastIdx, 180);
+  }
+  // If neither trend will reach the goal, show 7 days ahead so the chart isn't clipped.
+  const daysToAdd = (goalWeightKg !== null && fullDaysToAdd === 0 && recentDaysToAdd === 0)
+    ? 7
+    : Math.max(fullDaysToAdd, recentDaysToAdd);
+  for (let i = 1; i <= daysToAdd; i++) {
+    const d = new Date(lastMs + i * 24 * 60 * 60 * 1000);
+    extLabels.push(`${MONTH_ABBR_[d.getMonth()]} ${d.getDate()}`);
+    extValues.push(null);
+    extTrend.push(slope !== 0 && intercept !== null ? Math.round((slope * (lastIdx + i) + intercept) * 100) / 100 : null);
+    extRecentTrend.push(recentSlope !== 0 && recentIntercept !== null ? Math.round((recentSlope * (lastIdx + i) + recentIntercept) * 100) / 100 : null);
   }
 
   const nonNullWeights = extValues.filter(v => v !== null);
   const nonNullTrend   = extTrend.filter(v => v !== null);
+  const nonNullRecentTrend = extRecentTrend.filter(v => v !== null);
   const allValues = goalWeightKg !== null
-    ? [...nonNullWeights, goalWeightKg, ...nonNullTrend]
-    : [...nonNullWeights, ...nonNullTrend];
+    ? [...nonNullWeights, goalWeightKg, ...nonNullTrend, ...nonNullRecentTrend]
+    : [...nonNullWeights, ...nonNullTrend, ...nonNullRecentTrend];
   const yMin = allValues.length ? Math.floor(Math.min(...allValues)) - 2 : undefined;
   const yMax = allValues.length ? Math.ceil(Math.max(...allValues)) + 2 : undefined;
 
@@ -147,7 +171,13 @@ function buildWeightOnlyChartUrl_(weightByDate, startDate, today, goalWeightKg, 
         },
         {
           label: "Trend", data: extTrend,
-          fill: false, spanGaps: true, borderColor: "rgba(74, 143, 217, 0.6)", borderWidth: 1.5, tension: 0, pointRadius: 0,
+          fill: false, spanGaps: true, borderColor: "rgba(74, 143, 217, 0.5)", borderWidth: 1.5, borderDash: [5, 4], tension: 0, pointRadius: 0,
+          yAxisID: "y-axis-0",
+          datalabels: { display: false },
+        },
+        {
+          label: "Recent Trend", data: extRecentTrend,
+          fill: false, spanGaps: false, borderColor: "rgba(74, 143, 217, 0.85)", borderWidth: 2, tension: 0, pointRadius: 0,
           yAxisID: "y-axis-0",
           datalabels: { display: false },
         },

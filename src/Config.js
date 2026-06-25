@@ -20,6 +20,10 @@ const CONFIG = {
   // Number of days shown in the calorie chart (sliding window).
   CHART_WINDOW_DAYS: 7,
 
+  // Number of most-recent weigh-ins used for the short-term trend line.
+  // Clamped to [2, total weigh-ins] at runtime.
+  WEIGHT_TREND_RECENT_N: 7,
+
   //////////////////////////////////////////////////////////////////////////////////////
 
   // HtmlService template file names for email bodies.
